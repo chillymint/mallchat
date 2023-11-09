@@ -27,6 +27,13 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if(evt instanceof WebSocketServerProtocolHandler.HandshakeComplete){
             System.out.println("握手完成");
+        }else if(evt instanceof IdleStateEvent){
+            IdleStateEvent event = (IdleStateEvent) evt;
+            if (event.state() == IdleState.READER_IDLE ){
+                System.out.println("目前读是空闲!");
+                // todo 用户下线
+                ctx.channel().close();
+            }
         }
     }
 
