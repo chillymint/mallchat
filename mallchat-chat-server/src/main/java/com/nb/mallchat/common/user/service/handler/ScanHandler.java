@@ -1,6 +1,7 @@
 package com.nb.mallchat.common.user.service.handler;
 
 //import com.nb.mallchat.common.user.service.WxMsgService;
+import com.nb.mallchat.common.user.service.adapter.TextBuilder;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.common.session.WxSessionManager;
 import me.chanjar.weixin.mp.api.WxMpService;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+
+
 
 @Component
 public class ScanHandler extends AbstractHandler {
@@ -23,7 +26,10 @@ public class ScanHandler extends AbstractHandler {
                                     WxMpService wxMpService, WxSessionManager wxSessionManager) throws WxErrorException {
 //        // 扫码事件处理
 //        return wxMsgService.scan(wxMpService, wxMpXmlMessage);
-        return null;
+        String code = wxMpXmlMessage.getEventKey();
+        String openId = wxMpXmlMessage.getFromUser();
+        //todo 扫码
+        return TextBuilder.build("你好你好!", wxMpXmlMessage, wxMpService);
     }
 
 }
