@@ -62,6 +62,7 @@ public class WxPortalController {
         try {
             WxOAuth2AccessToken accessToken = wxService.getOAuth2Service().getAccessToken(code);
             WxOAuth2UserInfo userInfo = wxService.getOAuth2Service().getUserInfo(accessToken, "zh_CN");
+            System.out.println(userInfo + "userInfo");
 //            wxMsgService.authorize(userInfo);
         } catch (Exception e) {
             log.error("callBack error", e);
