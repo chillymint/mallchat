@@ -53,13 +53,13 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
         WSBaseReq wsBaseReq = JSONUtil.toBean(text, WSBaseReq.class);
         switch (WSReqTypeEnum.of(wsBaseReq.getType())) {
             case AUTHORIZE:
-                webSocketService.handleLoginReq(ctx.channel());
                 break;
             case HEARTBEAT:
                 break;
             case LOGIN:
-                System.out.println("请求二维码");
-                ctx.channel().writeAndFlush(new TextWebSocketFrame("123"));
+                // System.out.println("请求二维码");
+                // ctx.channel().writeAndFlush(new TextWebSocketFrame("123"));
+                webSocketService.handleLoginReq(ctx.channel());
         }
     }
 
