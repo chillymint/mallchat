@@ -9,7 +9,13 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public interface WebSocketService {
+
+
+    void offline(Channel channel);
+
     void connect(Channel channel);
 
     void handleLoginReq(Channel channel) throws WxErrorException;
+
+    void remove(Channel channel);
 }

@@ -10,6 +10,7 @@ import cn.hutool.json.JSONUtil;
 import com.nb.mallchat.common.websocket.domain.enums.WSReqTypeEnum;
 import com.nb.mallchat.common.websocket.domain.vo.req.WSBaseReq;
 import com.nb.mallchat.common.websocket.service.WebSocketService;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
@@ -33,6 +34,11 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
     }
 
     @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        userOffline(ctx.channel());
+    }
+
+    @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if(evt instanceof WebSocketServerProtocolHandler.HandshakeComplete){
             System.out.println("握手完成");
@@ -41,9 +47,17 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
             if (event.state() == IdleState.READER_IDLE ){
                 System.out.println("目前读是空闲!");
                 // todo 用户下线
-                ctx.channel().close();
             }
         }
+    }
+
+    /**
+     * 用户下线统一处理
+     * @param channel
+     */
+    private void userOffline(Channel channel){
+        webSocketService.remove(channel);
+        channel.close();
     }
 
     // 读取客户端发送的请求报文

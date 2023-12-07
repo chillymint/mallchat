@@ -13,6 +13,7 @@ import com.nb.mallchat.common.websocket.service.WebSocketService;
 import com.nb.mallchat.common.websocket.service.adapter.WebSocketAdapter;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
@@ -51,6 +52,14 @@ public class WebSocketServiceImpl implements WebSocketService {
             .maximumSize(MAXIMUM_SIZE)
             .expireAfterWrite(DURATION)
             .build();
+
+    @Override
+    public void offline(Channel channel) {
+        ONLINE_WS_MAP.remove(channel);
+        //todo 用户下线
+
+    }
+
     @Override
     public void connect(Channel channel) {
         //保存连接
@@ -58,14 +67,23 @@ public class WebSocketServiceImpl implements WebSocketService {
 
     }
 
+    @SneakyThrows
     @Override
-    public void handleLoginReq(Channel channel) throws WxErrorException {
+    public void handleLoginReq(Channel channel) {
         //生成随机码
         Integer code = generateLoginCode(channel);
         //找微信申请带参二维码
         WxMpQrCodeTicket wxMpQrCodeTicket = wxMpService.getQrcodeService().qrCodeCreateTmpTicket(code, (int) DURATION.getSeconds());
         //把码推送给前端
         sendMsg(channel, WebSocketAdapter.buildResp(wxMpQrCodeTicket));
+    }
+
+    @Override
+    public void remove(Channel channel) {
+        ONLINE_WS_MAP.remove(channel);
+        //todo 用户下线
+
+
     }
 
     private void sendMsg(Channel channel, WSBaseResp<WSLoginUrl> resp) {
