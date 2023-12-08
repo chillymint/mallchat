@@ -5,13 +5,18 @@ import com.nb.mallchat.common.user.dao.UserDao;
 import com.nb.mallchat.common.user.domain.entity.User;
 import com.nb.mallchat.common.user.service.UserService;
 import com.nb.mallchat.common.user.service.WXMsgService;
+import com.nb.mallchat.common.user.service.adapter.TextBuilder;
 import com.nb.mallchat.common.user.service.adapter.UserAdapter;
 import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.net.URLEncoder;
 import java.util.Objects;
 
 /**
@@ -19,10 +24,18 @@ import java.util.Objects;
 @Service
 @Slf4j
 public class WXMsgServiceImpl implements WXMsgService {
+    @Value("${wx.mp.callback}")
+    private String callback;
+
+    public static final String URL  = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
+
     @Autowired
     private UserDao userDao;
     @Autowired
     private UserService userService;
+    @Autowired
+    @Lazy
+    private WxMpService wxMpService;
     @Override
     public WxMpXmlOutMessage scan(WxMpXmlMessage wxMpXmlMessage) {
         String openId = wxMpXmlMessage.getFromUser();
@@ -41,8 +54,10 @@ public class WXMsgServiceImpl implements WXMsgService {
             User insert = UserAdapter.buildUserSave(openId);
             userService.register(insert);
         }
-
-        return null;
+        //推送链接让用户授权
+        String authorizeUrl = String.format(URL, wxMpService.getWxMpConfigStorage().getAppId(), URLEncoder.encode(callback + "wx/portal/public/callBack"));
+        System.out.println(authorizeUrl + "<==authorizeUrl");
+        return TextBuilder.build("请点击登录: <a href=\"" + authorizeUrl + "\">登录</a>", wxMpXmlMessage, wxMpService);
     }
 
     private Integer getEventKey(WxMpXmlMessage wxMpXmlMessage) {

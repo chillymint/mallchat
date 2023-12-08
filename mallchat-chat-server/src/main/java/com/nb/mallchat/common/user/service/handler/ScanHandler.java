@@ -19,12 +19,6 @@ import java.util.Map;
 
 @Component
 public class ScanHandler extends AbstractHandler {
-    @Value("${wx.mp.callback}")
-    private String callback;
-
-    public static final String URL  = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
-
-
    @Autowired
    private WXMsgService wxMsgService;
 
@@ -33,12 +27,6 @@ public class ScanHandler extends AbstractHandler {
                                     WxMpService wxMpService, WxSessionManager wxSessionManager) throws WxErrorException {
 //        // 扫码事件处理
         return wxMsgService.scan(wxMpXmlMessage);
-        String code = wxMpXmlMessage.getEventKey();
-        String openId = wxMpXmlMessage.getFromUser();
-        //todo 扫码
-        String authorizeUrl = String.format(URL, wxMpService.getWxMpConfigStorage().getAppId(), URLEncoder.encode(callback + "wx/portal/public/callBack"));
-        System.out.println(authorizeUrl + "<==authorizeUrl");
-        return TextBuilder.build("请点击登录: <a href=\"" + authorizeUrl + "\">登录</a>", wxMpXmlMessage, wxMpService);
     }
 
 }

@@ -16,8 +16,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public Long register(User insert) {
-        boolean save = userDao.save(insert);
+        userDao.save(insert);
         //todo 用户注册
-
+        return insert.getId();
     }
 }

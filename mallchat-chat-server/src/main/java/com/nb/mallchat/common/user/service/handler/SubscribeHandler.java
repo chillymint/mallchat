@@ -36,18 +36,16 @@ public class SubscribeHandler extends AbstractHandler {
         } catch (Exception e) {
             this.logger.error(e.getMessage(), e);
         }
-
         if (responseResult != null) {
             return responseResult;
         }
-
         try {
 //            return new TextBuilder().build("感谢关注", wxMessage, weixinService);
         } catch (Exception e) {
             this.logger.error(e.getMessage(), e);
         }
 
-        return TextBuilder.build("感谢关注", wxMessage, );
+        return TextBuilder.build("感谢关注", wxMessage, weixinService);
     }
 
     /**
