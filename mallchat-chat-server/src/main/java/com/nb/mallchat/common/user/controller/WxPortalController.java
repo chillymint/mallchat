@@ -1,6 +1,7 @@
 package com.nb.mallchat.common.user.controller;
 
 //import com.nb.mallchat.common.user.service.WxMsgService;
+import com.nb.mallchat.common.user.service.WXMsgService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
@@ -12,6 +13,7 @@ import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -26,9 +28,13 @@ import org.springframework.web.servlet.view.RedirectView;
 @RequestMapping("wx/portal/public")
 public class WxPortalController {
 
+    @Autowired
     private final WxMpService wxService;
+    @Autowired
     private final WxMpMessageRouter messageRouter;
-//    private final WxMsgService wxMsgService;
+    @Autowired
+    private WXMsgService wxMsgService;
+
     @GetMapping("/test")
     public String getQrCode(@RequestParam Integer code) throws WxErrorException{
         WxMpQrCodeTicket wxMpQrCodeTicket = wxService.getQrcodeService().qrCodeCreateTmpTicket(code, 10000);
@@ -63,11 +69,12 @@ public class WxPortalController {
             WxOAuth2AccessToken accessToken = wxService.getOAuth2Service().getAccessToken(code);
             WxOAuth2UserInfo userInfo = wxService.getOAuth2Service().getUserInfo(accessToken, "zh_CN");
             System.out.println(userInfo + "userInfo");
-//            wxMsgService.authorize(userInfo);
+            wxMsgService.authorize(userInfo);
         } catch (Exception e) {
             log.error("callBack error", e);
         }
         RedirectView redirectView = new RedirectView();
+        //setUrl("www.mallchat.cn")
         redirectView.setUrl("https://mp.weixin.qq.com/s/m1SRsBG96kLJW5mPe4AVGA");
         return redirectView;
     }

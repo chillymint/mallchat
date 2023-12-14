@@ -18,4 +18,6 @@ public interface WebSocketService {
     void handleLoginReq(Channel channel) throws WxErrorException;
 
     void remove(Channel channel);
+
+    void scanLoginSuccess(Integer code, Long uid);
 }

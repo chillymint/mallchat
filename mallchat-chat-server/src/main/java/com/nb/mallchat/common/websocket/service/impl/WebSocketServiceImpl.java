@@ -1,10 +1,12 @@
 package com.nb.mallchat.common.websocket.service.impl;
 
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.json.JSONUtil;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.nb.mallchat.common.user.LoginService;
+import com.nb.mallchat.common.user.dao.UserDao;
+import com.nb.mallchat.common.user.domain.entity.User;
 import com.nb.mallchat.common.websocket.domain.dto.WSChannelExtraDTO;
 import com.nb.mallchat.common.websocket.domain.enums.WSRespTypeEnum;
 import com.nb.mallchat.common.websocket.domain.vo.resp.WSBaseResp;
@@ -19,6 +21,7 @@ import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -32,8 +35,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 @Slf4j
 public class WebSocketServiceImpl implements WebSocketService {
+    @Lazy
     @Autowired
-    WxMpService wxMpService;
+    private WxMpService wxMpService;
+    @Autowired
+    private UserDao userDao;
+    @Autowired
+    private LoginService loginService;
     /**
      * 管理所有用户的连接(登录态/游客)
      */
@@ -86,7 +94,24 @@ public class WebSocketServiceImpl implements WebSocketService {
 
     }
 
-    private void sendMsg(Channel channel, WSBaseResp<WSLoginUrl> resp) {
+    @Override
+    public void scanLoginSuccess(Integer code, Long uid) {
+        //确认连接在机器上
+        Channel channel = WAIT_LOGIN_MAP.getIfPresent(code);
+        if(Objects.isNull(channel)){
+            return;
+        }
+        User user = userDao.getById(uid);
+        //移除code
+        WAIT_LOGIN_MAP.invalidate(code);
+        //调用登录模块获取token
+        String token = loginService.login(uid);
+        //用户登录
+        sendMsg(channel, WebSocketAdapter.buildResp(user, token));
+
+    }
+
+    private void sendMsg(Channel channel, WSBaseResp<?> resp) {
         channel.writeAndFlush(new TextWebSocketFrame(JSONUtil.toJsonStr(resp)));
     }
 
