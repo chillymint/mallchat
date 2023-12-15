@@ -1,5 +1,7 @@
 package com.nb.mallchat.common;
 
+import com.nb.mallchat.common.common.utils.JwtUtils;
+import com.nb.mallchat.common.user.LoginService;
 import com.nb.mallchat.common.user.dao.UserDao;
 import com.nb.mallchat.common.user.domain.entity.User;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -14,10 +16,30 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class DaoTest {
+    public static final long UID = 12717L;
     @Autowired
     UserDao userDao;
     @Autowired
     private WxMpService wxMpService;
+    @Autowired
+    JwtUtils jwtUtils;
+    @Autowired
+    LoginService loginService;
+
+    @Test
+    public void jwt(){
+        String token1 = jwtUtils.createToken(1L);
+        String token2 = jwtUtils.createToken(1L);
+        System.out.println(token1 + "<br/>" +token2);
+        // String login = loginService.login(UID);
+        // System.out.println(login);
+    }
+
+    @Test
+    public  void testCreateToken(){
+        String token = loginService.login(10276L);
+        System.out.println("token=>:" + token);
+    }
 
     @Test
     public void test() throws WxErrorException {
