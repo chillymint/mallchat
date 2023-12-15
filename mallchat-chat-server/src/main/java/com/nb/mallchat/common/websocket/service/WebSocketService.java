@@ -20,4 +20,6 @@ public interface WebSocketService {
     void remove(Channel channel);
 
     void scanLoginSuccess(Integer code, Long uid);
+
+    void waitAuthorize(Integer code);
 }

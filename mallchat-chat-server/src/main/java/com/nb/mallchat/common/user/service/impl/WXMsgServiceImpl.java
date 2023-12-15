@@ -68,6 +68,7 @@ public class WXMsgServiceImpl implements WXMsgService {
         }
         //推送链接让用户授权
         WAIT_AUTHORIZE_MAP.put(openId, code);
+        webSocketService.waitAuthorize(code);
         String authorizeUrl = String.format(URL, wxMpService.getWxMpConfigStorage().getAppId(), URLEncoder.encode(callback + "wx/portal/public/callBack"));
         System.out.println(authorizeUrl + "<==authorizeUrl");
         return TextBuilder.build("请点击登录: <a href=\"" + authorizeUrl + "\">登录</a>", wxMpXmlMessage, wxMpService);

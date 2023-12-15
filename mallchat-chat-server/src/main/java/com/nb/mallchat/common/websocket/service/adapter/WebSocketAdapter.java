@@ -29,4 +29,11 @@ public class WebSocketAdapter {
         resp.setData(build);
         return resp;
     }
+
+    public static WSBaseResp<?> buildWaitAuthorizeResp() {
+        WSBaseResp<WSLoginUrl> resp = new WSBaseResp<>();
+        resp.setType(WSRespTypeEnum.LOGIN_SCAN_SUCCESS.getType());
+
+        return resp;
+    }
 }
