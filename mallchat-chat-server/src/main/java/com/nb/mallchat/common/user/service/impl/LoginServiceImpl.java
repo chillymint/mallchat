@@ -22,6 +22,7 @@ public class LoginServiceImpl implements LoginService {
     public static final long TOKEN_EXPIRE_DAYS = 3;
     @Autowired
     private JwtUtils jwtUtils;
+    ThreadPoolExecutor executor;
 
     @Override
     public boolean verify(String token) {
@@ -29,7 +30,34 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
+    @Async
     public void renewalTokenIfNecessary(String token) {
+        //异步刷新token
+        // executor.execute(() -> {
+        //     Long uid = getValidUid(token);
+        //     String userTokenKey = getUserTokenKey(uid);
+        //     Long expireDays = RedisUtils.getExpire(userTokenKey, TimeUnit.DAYS);
+        //     if(expireDays == -2){
+        //         return;
+        //     }
+        //     if(expireDays < 1){
+        //         RedisUtils.expire(getUserTokenKey(uid), TOKEN_EXPIRE_DAYS, TimeUnit.DAYS);
+        //
+        //     }
+        // });
+        Long uid = getValidUid(token);
+        String userTokenKey = getUserTokenKey(uid);
+        Long expireDays = RedisUtils.getExpire(userTokenKey, TimeUnit.DAYS);
+        if(expireDays == -2){
+            return;
+        }
+        if(expireDays < 1){
+            RedisUtils.expire(getUserTokenKey(uid), TOKEN_EXPIRE_DAYS, TimeUnit.DAYS);
+
+        }
+
+
+
 
     }
 

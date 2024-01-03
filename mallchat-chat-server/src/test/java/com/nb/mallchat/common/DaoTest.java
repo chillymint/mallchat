@@ -6,6 +6,7 @@ import com.nb.mallchat.common.common.utils.RedisUtils;
 import com.nb.mallchat.common.user.LoginService;
 import com.nb.mallchat.common.user.dao.UserDao;
 import com.nb.mallchat.common.user.domain.entity.User;
+import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
@@ -21,6 +22,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @SpringBootTest
+@Slf4j
 @RunWith(SpringRunner.class)
 public class DaoTest {
     public static final long UID = 12717L;
