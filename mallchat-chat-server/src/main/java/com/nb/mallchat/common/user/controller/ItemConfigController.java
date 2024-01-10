@@ -7,13 +7,12 @@ import org.springframework.stereotype.Controller;
 
 /**
  * <p>
- * 用户表 前端控制器
+ * 功能物品配置表 前端控制器
  * </p>
- *
  */
 @Controller
-@RequestMapping("/user")
-public class UserController {
+@RequestMapping("/itemConfig")
+public class ItemConfigController {
 
 }
 
