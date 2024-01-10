@@ -19,6 +19,8 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.util.Attribute;
+import io.netty.util.AttributeKey;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -41,14 +43,26 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if(evt instanceof WebSocketServerProtocolHandler.HandshakeComplete){
+            String token = NettyUtil.getAttr(ctx.channel(), NettyUtil.TOKEN);
+            if(StrUtil.isNotBlank(token)){
+                webSocketService.authorize(ctx.channel(), token);
+            }
             System.out.println("握手完成");
-        }else if(evt instanceof IdleStateEvent){
+
+        }else if(evt instanceof IdleStateEvent) {
             IdleStateEvent event = (IdleStateEvent) evt;
-            if (event.state() == IdleState.READER_IDLE ){
+            if (event.state() == IdleState.READER_IDLE) {
                 System.out.println("目前读是空闲!");
                 // todo 用户下线
+                userOffline(ctx.channel());
             }
         }
+        // }else if(evt == WebSocketServerProtocolHandler.ServerHandshakeStateEvent.HANDSHAKE_COMPLETE){
+        //     System.out.println("握手请求");
+        //     Attribute<Object> token1 = ctx.channel().attr(AttributeKey.valueOf("token"));
+        //     webSocketService.authorize(ctx.channel(), token1.get().toString());
+        //
+        // }
     }
 
     /**

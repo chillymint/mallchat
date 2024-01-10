@@ -1,5 +1,6 @@
 package com.nb.mallchat.common.websocket;
 
+import com.nb.mallchat.common.websocket.service.MyHandShakeHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
