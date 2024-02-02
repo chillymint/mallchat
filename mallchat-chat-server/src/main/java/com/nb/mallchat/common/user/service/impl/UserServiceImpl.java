@@ -9,10 +9,13 @@ import com.nb.mallchat.common.user.domain.entity.ItemConfig;
 import com.nb.mallchat.common.user.domain.entity.User;
 import com.nb.mallchat.common.user.domain.entity.UserBackpack;
 import com.nb.mallchat.common.user.domain.enums.ItemEnum;
+import com.nb.mallchat.common.user.domain.enums.ItemTypeEnum;
 import com.nb.mallchat.common.user.domain.vo.req.ModifyNameReq;
+import com.nb.mallchat.common.user.domain.vo.resp.BadgeResp;
 import com.nb.mallchat.common.user.domain.vo.resp.UserInfoResp;
 import com.nb.mallchat.common.user.service.UserService;
 import com.nb.mallchat.common.user.service.adapter.UserAdapter;
+import com.nb.mallchat.common.user.service.cache.ItemCache;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.lang.model.element.Name;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  */
@@ -63,5 +68,30 @@ public class UserServiceImpl implements UserService {
             // 改名
             userDao.modifyName(uid, name);
         }
+    }
+
+    @Override
+    public List<BadgeResp> badges(Long uid) {
+        //查询所有徽章
+        List<ItemConfig> itemConfigs = itemCache.getByType(ItemTypeEnum.BADGE.getType());
+        //查询用户拥有徽章
+        List<UserBackpack> backpacks = userBackpackDao.getByItemIds(uid, itemConfigs.stream()
+                .map(ItemConfig::getId).collect(Collectors.toList()));
+        //查询用户佩戴的徽章
+        User user = userDao.getById(uid);
+
+        return UserAdapter.buildBadgeResp(itemConfigs, backpacks, user);
+    }
+
+    @Override
+    public void wearingBadge(Long uid, Long itemId) {
+        // 确保有徽章
+        UserBackpack firstValidItem = userBackpackDao.getFirstValidItem(uid, itemId);
+
+        AssertUtil.isNotEmpty(firstValidItem, "您还没有获得这个徽章，快去获得吧!");
+        // 确保这个物品是徽章
+        ItemConfig itemConfig = itemConfigDao.getById(firstValidItem.getItemId());
+        AssertUtil.equal(itemConfig.getType(), ItemTypeEnum.BADGE.getType(), "只有徽章才能佩戴");
+        userDao.wearingBadge(uid, itemId);
     }
 }
