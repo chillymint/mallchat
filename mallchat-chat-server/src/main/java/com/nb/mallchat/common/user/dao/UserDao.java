@@ -3,6 +3,7 @@ package com.nb.mallchat.common.user.dao;
 import com.nb.mallchat.common.user.domain.entity.User;
 import com.nb.mallchat.common.user.mapper.UserMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.nb.mallchat.common.user.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -14,7 +15,7 @@ import java.util.Objects;
  *
  */
 @Service
-public class UserDao extends ServiceImpl<UserMapper, User>  {
+public class UserDao extends ServiceImpl<UserMapper, User>   {
 
     public User getByOpenId(String openId) {
         return lambdaQuery()
