@@ -28,6 +28,7 @@ public class UserBackpackServiceImpl implements IUserBackpackService {
 	@Autowired
 	private UserBackpackDao userBackpackdao;
 	@Override
+	@Cacheable(key = "#itemId")
 	public void acquireItem(Long uid, Long itemId, IdempotentEnum idempotentEnum, String businessId) {
 		String idempotent = getIdempotent(itemId, idempotentEnum, businessId);
 		lockService.executeWithLock("acquireItem" + idempotent, ()->{
