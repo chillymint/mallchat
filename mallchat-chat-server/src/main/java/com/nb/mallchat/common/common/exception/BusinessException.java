@@ -24,7 +24,7 @@ public class BusinessException extends RuntimeException{
 	}
 
 	public BusinessException(ErrorEnum errorEnum){
-		super(errorMsg);
+		super();
 
 	}
 }

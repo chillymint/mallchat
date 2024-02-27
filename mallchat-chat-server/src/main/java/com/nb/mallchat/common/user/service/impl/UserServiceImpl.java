@@ -1,5 +1,7 @@
 package com.nb.mallchat.common.user.service.impl;
 
+import com.nb.mallchat.common.common.annotation.RedissionLock;
+import com.nb.mallchat.common.common.event.UserRegisterEvent;
 import com.nb.mallchat.common.common.exception.BusinessException;
 import com.nb.mallchat.common.common.utils.AssertUtil;
 import com.nb.mallchat.common.user.dao.ItemConfigDao;
@@ -57,7 +59,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @RedissionLock(key = "#uid")
     public void modifyName(Long uid, String name) {
+        //事务锁
         User oldUser = userDao.getByName(name);
         AssertUtil.isEmpty(oldUser, "名称重复请更换！");
         UserBackpack modifyNameItem = userBackpackDao.getFirstValidItem(uid, ItemEnum.MODIFY_NAME_CARD.getId());
