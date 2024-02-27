@@ -1,6 +1,5 @@
 package com.nb.mallchat.common.common.exception;
 
-import io.swagger.models.auth.In;
 import lombok.Data;
 
 /**

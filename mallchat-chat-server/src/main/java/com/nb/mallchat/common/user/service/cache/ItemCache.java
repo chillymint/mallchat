@@ -22,6 +22,11 @@ public class ItemCache {
 		return itemConfigDao.getByType(itemType);
 	}
 
+	@Cacheable(cacheNames = "item", key = "'item:'+#itemId")
+	public ItemConfig getById(Long itemId) {
+		return itemConfigDao.getById(itemId);
+	}
+
 	@CacheEvict
 	public List<ItemConfig> evictByType(Integer itemType){
 		return itemConfigDao.getByType(itemType);

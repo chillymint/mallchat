@@ -20,6 +20,7 @@ import com.nb.mallchat.common.user.service.adapter.UserAdapter;
 import com.nb.mallchat.common.user.service.cache.ItemCache;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -41,12 +42,15 @@ public class UserServiceImpl implements UserService {
     private ItemCache itemCache;
     @Autowired
     private ItemConfigDao itemConfigDao;
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     @Transactional
     public Long register(User insert) {
         userDao.save(insert);
         //todo 用户注册
+        applicationEventPublisher.publishEvent(new UserRegisterEvent(this, insert));
         return insert.getId();
     }
 
