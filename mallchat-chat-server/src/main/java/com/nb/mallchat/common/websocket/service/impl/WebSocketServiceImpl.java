@@ -6,7 +6,9 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.nb.mallchat.common.user.LoginService;
 import com.nb.mallchat.common.user.dao.UserDao;
+import com.nb.mallchat.common.user.domain.entity.IpInfo;
 import com.nb.mallchat.common.user.domain.entity.User;
+import com.nb.mallchat.common.websocket.NettyUtil;
 import com.nb.mallchat.common.websocket.domain.dto.WSChannelExtraDTO;
 import com.nb.mallchat.common.websocket.domain.enums.WSRespTypeEnum;
 import com.nb.mallchat.common.websocket.domain.vo.resp.WSBaseResp;
@@ -20,11 +22,13 @@ import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
+import org.apache.catalina.core.ApplicationPushBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -42,6 +46,8 @@ public class WebSocketServiceImpl implements WebSocketService {
     private UserDao userDao;
     @Autowired
     private LoginService loginService;
+    @Autowired
+    private ApplicationPushBuilder applicationPushBuilder;
     /**
      * 管理所有用户的连接(登录态/游客)
      */
@@ -137,6 +143,11 @@ public class WebSocketServiceImpl implements WebSocketService {
         WSChannelExtraDTO wsChannelExtraDTO = ONLINE_WS_MAP.get(channel);
         wsChannelExtraDTO.setUid(user.getId());
         //todo 用户上线成功的事件
+        user.setLastOptTime(new Date());
+        IpInfo ipInfo = new IpInfo();
+        ipInfo.setCreateIp(NettyUtil.getAttr(channel, NettyUtil.IP));
+        ipInfo.setUpdateIp(NettyUtil.getAttr(channel, NettyUtil.IP));
+        user.setIpInfo(ipInfo);
 
         //推送成功消息
         sendMsg(channel, WebSocketAdapter.buildResp(user, token));
