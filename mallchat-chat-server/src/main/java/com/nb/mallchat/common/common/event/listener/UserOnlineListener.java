@@ -1,5 +1,6 @@
 package com.nb.mallchat.common.common.event.listener;
 
+import com.baomidou.mybatisplus.extension.api.R;
 import com.nb.mallchat.common.common.event.UserOnlineEvent;
 import com.nb.mallchat.common.common.event.UserRegisterEvent;
 import com.nb.mallchat.common.user.dao.UserDao;
@@ -27,7 +28,7 @@ public class UserOnlineListener {
 	// @Autowired
 	// private WSAdapter wsAdapter;
 	@Autowired
-	private IpService ipService;
+	private IpService<R> ipService;
 	// @Autowired
 	// private PushService pushService;
 

@@ -4,6 +4,7 @@ import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.thread.NamedThreadFactory;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.extension.api.R;
 import com.nb.mallchat.common.user.dao.UserDao;
 import com.nb.mallchat.common.user.domain.dto.IpResult;
 import com.nb.mallchat.common.user.domain.entity.IpDetail;
@@ -23,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 /**
  */
 @Slf4j
-public class IpServiceImpl implements IpService {
+public class IpServiceImpl implements IpService<R> {
 	@Autowired
 	private UserDao userDao;
 	private static final ExecutorService EXECUTOR = new ThreadPoolExecutor(1, 1,

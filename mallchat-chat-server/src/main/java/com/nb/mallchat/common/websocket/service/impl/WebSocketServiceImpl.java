@@ -8,18 +8,18 @@ import com.nb.mallchat.common.user.LoginService;
 import com.nb.mallchat.common.user.dao.UserDao;
 import com.nb.mallchat.common.user.domain.entity.IpInfo;
 import com.nb.mallchat.common.user.domain.entity.User;
+import com.nb.mallchat.common.user.domain.enums.RoleEnum;
+import com.nb.mallchat.common.user.service.IRoleService;
+import com.nb.mallchat.common.user.service.IUserRoleService;
 import com.nb.mallchat.common.websocket.NettyUtil;
 import com.nb.mallchat.common.websocket.domain.dto.WSChannelExtraDTO;
-import com.nb.mallchat.common.websocket.domain.enums.WSRespTypeEnum;
 import com.nb.mallchat.common.websocket.domain.vo.resp.WSBaseResp;
-import com.nb.mallchat.common.websocket.domain.vo.resp.WSLoginUrl;
 import com.nb.mallchat.common.websocket.service.WebSocketService;
 import com.nb.mallchat.common.websocket.service.adapter.WebSocketAdapter;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
 import org.apache.catalina.core.ApplicationPushBuilder;
@@ -48,6 +48,8 @@ public class WebSocketServiceImpl implements WebSocketService {
     private LoginService loginService;
     @Autowired
     private ApplicationPushBuilder applicationPushBuilder;
+    @Autowired
+    private IRoleService iRoleService;
     /**
      * 管理所有用户的连接(登录态/游客)
      */
@@ -150,7 +152,7 @@ public class WebSocketServiceImpl implements WebSocketService {
         user.setIpInfo(ipInfo);
 
         //推送成功消息
-        sendMsg(channel, WebSocketAdapter.buildResp(user, token));
+        sendMsg(channel, WebSocketAdapter.buildResp(user, token, iRoleService.hasPower(user.getId(), RoleEnum.CHAT_MANAGER)));
     }
 
     private void sendMsg(Channel channel, WSBaseResp<?> resp) {

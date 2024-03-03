@@ -1,6 +1,7 @@
 package com.nb.mallchat.common.websocket.service.adapter;
 
 import com.nb.mallchat.common.user.domain.entity.User;
+import com.nb.mallchat.common.user.domain.enums.YesOrNoEnum;
 import com.nb.mallchat.common.websocket.domain.enums.WSRespTypeEnum;
 import com.nb.mallchat.common.websocket.domain.vo.resp.WSBaseResp;
 import com.nb.mallchat.common.websocket.domain.vo.resp.WSLoginSuccess;
@@ -17,7 +18,7 @@ public class WebSocketAdapter {
         return resp;
     }
 
-    public static WSBaseResp<?> buildResp(User user, String token) {
+    public static WSBaseResp<?> buildResp(User user, String token, boolean power) {
         WSBaseResp<WSLoginSuccess> resp = new WSBaseResp<>();
         resp.setType(WSRespTypeEnum.LOGIN_SUCCESS.getType());
         WSLoginSuccess build = WSLoginSuccess.builder()
@@ -25,6 +26,7 @@ public class WebSocketAdapter {
                 .name(user.getName())
                 .token(token)
                 .uid(user.getId())
+                .power(power? YesOrNoEnum.YES.getStatus() : YesOrNoEnum.NO.getStatus())
                 .build();
         resp.setData(build);
         return resp;

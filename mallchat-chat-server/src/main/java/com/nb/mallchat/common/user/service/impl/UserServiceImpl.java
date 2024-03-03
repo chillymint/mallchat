@@ -2,32 +2,29 @@ package com.nb.mallchat.common.user.service.impl;
 
 import com.nb.mallchat.common.common.annotation.RedissionLock;
 import com.nb.mallchat.common.common.event.UserRegisterEvent;
-import com.nb.mallchat.common.common.exception.BusinessException;
 import com.nb.mallchat.common.common.utils.AssertUtil;
 import com.nb.mallchat.common.user.dao.ItemConfigDao;
 import com.nb.mallchat.common.user.dao.UserBackpackDao;
 import com.nb.mallchat.common.user.dao.UserDao;
+import com.nb.mallchat.common.user.domain.dto.Black;
 import com.nb.mallchat.common.user.domain.entity.ItemConfig;
 import com.nb.mallchat.common.user.domain.entity.User;
 import com.nb.mallchat.common.user.domain.entity.UserBackpack;
+import com.nb.mallchat.common.user.domain.enums.BlackTypeEnum;
 import com.nb.mallchat.common.user.domain.enums.ItemEnum;
 import com.nb.mallchat.common.user.domain.enums.ItemTypeEnum;
-import com.nb.mallchat.common.user.domain.vo.req.ModifyNameReq;
+import com.nb.mallchat.common.user.domain.vo.req.BlackReq;
 import com.nb.mallchat.common.user.domain.vo.resp.BadgeResp;
 import com.nb.mallchat.common.user.domain.vo.resp.UserInfoResp;
 import com.nb.mallchat.common.user.service.UserService;
 import com.nb.mallchat.common.user.service.adapter.UserAdapter;
 import com.nb.mallchat.common.user.service.cache.ItemCache;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import javax.lang.model.element.Name;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -101,5 +98,17 @@ public class UserServiceImpl implements UserService {
         ItemConfig itemConfig = itemConfigDao.getById(firstValidItem.getItemId());
         AssertUtil.equal(itemConfig.getType(), ItemTypeEnum.BADGE.getType(), "只有徽章才能佩戴");
         userDao.wearingBadge(uid, itemId);
+    }
+
+    @Override
+    public void black(BlackReq req) {
+        Long uid = req.getUid();
+        Black user = new Black();
+        user.setType(BlackTypeEnum.UID.getType());
+        user.setTarget(uid.toString());
+//        blackDao.save(user);
+//        User byId = userDao.getById(id);
+//        blackIp(byId.getIpInfo().getCreateIp());
+//        blackIp(byId.getIpInfo().getUpdateIp());
     }
 }
