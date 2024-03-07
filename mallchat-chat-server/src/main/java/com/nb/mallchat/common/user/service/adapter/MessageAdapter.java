@@ -1,6 +1,15 @@
 package com.nb.mallchat.common.user.service.adapter;
 
 import com.nb.mallchat.common.common.domain.entity.Message;
+import com.nb.mallchat.common.common.domain.enu.MessageStatusEnum;
+import com.nb.mallchat.common.common.domain.vo.req.ChatMessageReq;
+import com.nb.mallchat.common.common.domain.vo.resp.ChatMessageResp;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Description: 消息适配器
@@ -8,28 +17,28 @@ import com.nb.mallchat.common.common.domain.entity.Message;
 public class MessageAdapter {
 	public static final int CAN_CALLBACK_GAP_COUNT = 100;
 
-	// public static Message buildMsgSave(ChatMessageReq request, Long uid) {
-	//
-	// 	return Message.builder()
-	// 			.fromUid(uid)
-	// 			.roomId(request.getRoomId())
-	// 			.type(request.getMsgType())
-	// 			.status(MessageStatusEnum.NORMAL.getStatus())
-	// 			.build();
-	//
-	// }
-	//
-	// public static List<ChatMessageResp> buildMsgResp(List<Message> messages, List<MessageMark> msgMark, Long receiveUid) {
-	// 	Map<Long, List<MessageMark>> markMap = msgMark.stream().collect(Collectors.groupingBy(MessageMark::getMsgId));
-	// 	return messages.stream().map(a -> {
-	// 		ChatMessageResp resp = new ChatMessageResp();
-	// 		resp.setFromUser(buildFromUser(a.getFromUid()));
-	// 		resp.setMessage(buildMessage(a, markMap.getOrDefault(a.getId(), new ArrayList<>()), receiveUid));
-	// 		return resp;
-	// 	})
-	// 			.sorted(Comparator.comparing(a -> a.getMessage().getSendTime()))//帮前端排好序，更方便它展示
-	// 			.collect(Collectors.toList());
-	// }
+	public static Message buildMsgSave(ChatMessageReq request, Long uid) {
+
+		return Message.builder()
+				.fromUid(uid)
+				.roomId(request.getRoomId())
+				.type(request.getMsgType())
+				.status(MessageStatusEnum.NORMAL.getStatus())
+				.build();
+
+	}
+
+	public static List<ChatMessageResp> buildMsgResp(List<Message> messages, List<ChatMessageResp.MessageMark> msgMark, Long receiveUid) {
+		Map<Long, List<ChatMessageResp.MessageMark>> markMap = msgMark.stream().collect(Collectors.groupingBy(ChatMessageResp.MessageMark::getMsgId));
+		return messages.stream().map(a -> {
+			ChatMessageResp resp = new ChatMessageResp();
+			// resp.setFromUser(buildFromUser(a.getFromUid()));
+			// resp.setMessage(buildMessage(a, markMap.getOrDefault(a.getId(), new ArrayList<>()), receiveUid));
+			return resp;
+		})
+				.sorted(Comparator.comparing(a -> a.getMessage().getSendTime()))//帮前端排好序，更方便它展示
+				.collect(Collectors.toList());
+	}
 	//
 	// private static ChatMessageResp.Message buildMessage(Message message, List<MessageMark> marks, Long receiveUid) {
 	// 	ChatMessageResp.Message messageVO = new ChatMessageResp.Message();

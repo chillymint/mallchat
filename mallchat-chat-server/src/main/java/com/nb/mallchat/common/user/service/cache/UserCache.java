@@ -60,10 +60,10 @@ public class UserCache {
 //    @Autowired
 //    private UserSummaryCache userSummaryCache;
 //
-//    public Long getOnlineNum() {
-//        String onlineKey = RedisKey.getKey(RedisKey.ONLINE_UID_ZET);
-//        return RedisUtils.zCard(onlineKey);
-//    }
+   public Long getOnlineNum() {
+       String onlineKey = RedisKey.getKey(RedisKey.ONLINE_UID_ZET);
+       return RedisUtils.zCard(onlineKey);
+   }
 //
 //    public Long getOfflineNum() {
 //        String offlineKey = RedisKey.getKey(RedisKey.OFFLINE_UID_ZET);
@@ -130,12 +130,12 @@ public class UserCache {
 //        RedisUtils.set(key, new Date().getTime());
 //    }
 //
-//    /**
-//     * 获取用户信息，盘路缓存模式
-//     */
-//    public User getUserInfo(Long uid) {//todo 后期做二级缓存
-//        return getUserInfoBatch(Collections.singleton(uid)).get(uid);
-//    }
+   /**
+    * 获取用户信息，盘路缓存模式
+    */
+   public User getUserInfo(Long uid) {//todo 后期做二级缓存
+       return getUserInfoBatch(Collections.singleton(uid)).get(uid);
+   }
 //
 //    /**
 //     * 获取用户信息，盘路缓存模式

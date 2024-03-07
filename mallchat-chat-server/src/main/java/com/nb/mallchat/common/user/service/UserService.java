@@ -13,9 +13,6 @@ import java.util.List;
  * <p>
  * 用户表 服务类
  * </p>
- *
- * @author <a href="https://github.com/zongzibinbin">cc</a>
- * @since 2023-11-13
  */
 public interface UserService {
 
