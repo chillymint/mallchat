@@ -159,12 +159,12 @@ public class UserCache {
 //        return map;
 //    }
 //
-//    public void userInfoChange(Long uid) {
-//        delUserInfo(uid);
-//        //删除UserSummaryCache，前端下次懒加载的时候可以获取到最新的数据
-//        userSummaryCache.delete(uid);
-//        refreshUserModifyTime(uid);
-//    }
+   public void userInfoChange(Long uid) {
+       // delUserInfo(uid);
+       // //删除UserSummaryCache，前端下次懒加载的时候可以获取到最新的数据
+       // userSummaryCache.delete(uid);
+       // refreshUserModifyTime(uid);
+   }
 //
 //    public void delUserInfo(Long uid) {
 //        String key = RedisKey.getKey(RedisKey.USER_INFO_STRING, uid);
@@ -180,17 +180,17 @@ public class UserCache {
         }
         return result;
     }
-//
-//    @CacheEvict(cacheNames = "user", key = "'blackList'")
-//    public Map<Integer, Set<String>> evictBlackMap() {
-//        return null;
-//    }
-//
-//    @Cacheable(cacheNames = "user", key = "'roles'+#uid")
-//    public Set<Long> getRoleSet(Long uid) {
-//        List<UserRole> userRoles = userRoleDao.listByUid(uid);
-//        return userRoles.stream()
-//                .map(UserRole::getRoleId)
-//                .collect(Collectors.toSet());
-//    }
+
+   @CacheEvict(cacheNames = "user", key = "'blackList'")
+   public Map<Integer, Set<String>> evictBlackMap() {
+       return null;
+   }
+   //
+   // @Cacheable(cacheNames = "user", key = "'roles'+#uid")
+   // public Set<Long> getRoleSet(Long uid) {
+   //     List<UserRole> userRoles = userRoleDao.listByUid(uid);
+   //     return userRoles.stream()
+   //             .map(UserRole::getRoleId)
+   //             .collect(Collectors.toSet());
+   // }
 }

@@ -1,7 +1,9 @@
 package com.nb.mallchat.common.user.service;
 
+import com.nb.mallchat.common.user.domain.dto.ItemInfoDTO;
 import com.nb.mallchat.common.user.domain.entity.User;
 import com.nb.mallchat.common.user.domain.vo.req.BlackReq;
+import com.nb.mallchat.common.user.domain.vo.req.ItemInfoReq;
 import com.nb.mallchat.common.user.domain.vo.resp.BadgeResp;
 import com.nb.mallchat.common.user.domain.vo.resp.UserInfoResp;
 
@@ -28,4 +30,6 @@ public interface UserService {
 	void wearingBadge(Long uid, Long badgeId);
 
     void black(BlackReq req);
+
+	List<ItemInfoDTO> getItemInfo(ItemInfoReq req);
 }

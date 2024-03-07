@@ -7,6 +7,7 @@ import com.nb.mallchat.common.user.dao.ItemConfigDao;
 import com.nb.mallchat.common.user.dao.UserBackpackDao;
 import com.nb.mallchat.common.user.dao.UserDao;
 import com.nb.mallchat.common.user.domain.dto.Black;
+import com.nb.mallchat.common.user.domain.dto.ItemInfoDTO;
 import com.nb.mallchat.common.user.domain.entity.ItemConfig;
 import com.nb.mallchat.common.user.domain.entity.User;
 import com.nb.mallchat.common.user.domain.entity.UserBackpack;
@@ -14,6 +15,7 @@ import com.nb.mallchat.common.user.domain.enums.BlackTypeEnum;
 import com.nb.mallchat.common.user.domain.enums.ItemEnum;
 import com.nb.mallchat.common.user.domain.enums.ItemTypeEnum;
 import com.nb.mallchat.common.user.domain.vo.req.BlackReq;
+import com.nb.mallchat.common.user.domain.vo.req.ItemInfoReq;
 import com.nb.mallchat.common.user.domain.vo.resp.BadgeResp;
 import com.nb.mallchat.common.user.domain.vo.resp.UserInfoResp;
 import com.nb.mallchat.common.user.service.UserService;
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -110,5 +113,21 @@ public class UserServiceImpl implements UserService {
 //        User byId = userDao.getById(id);
 //        blackIp(byId.getIpInfo().getCreateIp());
 //        blackIp(byId.getIpInfo().getUpdateIp());
+    }
+
+    // 前后端异步懒加载
+    @Override
+    public List<ItemInfoDTO> getItemInfo(ItemInfoReq req) {//简单做，更新时间可判断被修改
+        return req.getReqList().stream().map(a -> {
+            ItemConfig itemConfig = itemCache.getById(a.getItemId());
+            if (Objects.nonNull(a.getLastModifyTime()) && a.getLastModifyTime() >= itemConfig.getUpdateTime().getTime()) {
+                return ItemInfoDTO.skip(a.getItemId());
+            }
+            ItemInfoDTO dto = new ItemInfoDTO();
+            dto.setItemId(itemConfig.getId());
+            dto.setImg(itemConfig.getImg());
+            dto.setDescribe(itemConfig.getDescribe());
+            return dto;
+        }).collect(Collectors.toList());
     }
 }
