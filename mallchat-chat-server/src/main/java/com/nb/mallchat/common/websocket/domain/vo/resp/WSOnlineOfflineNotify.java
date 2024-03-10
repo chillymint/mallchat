@@ -16,6 +16,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WSOnlineOfflineNotify {
-//    private List<com.nb.mallchat.common.user.domain.vo.response.ws.ChatMemberResp> changeList = new ArrayList<>();//新的上下线用户
+   // private List<com.nb.mallchat.common.user.domain.vo.resp.<ChatMemberResp> changeList = new ArrayList<>();//新的上下线用户
     private Long onlineNum;//在线人数
 }
