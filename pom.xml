@@ -11,6 +11,7 @@
     <modules>
         <module>mallchat-chat-server</module>
         <module>mallchat-framwork</module>
+        <module>mallchat-framwork/mallchat-oss-starter</module>
     </modules>
 
     <parent>
