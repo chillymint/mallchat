@@ -2,6 +2,7 @@ package com.nb.mallchat.common.common.service;
 
 import com.nb.mallchat.common.common.domain.dto.MsgReadInfoDTO;
 import com.nb.mallchat.common.common.domain.entity.Message;
+import com.nb.mallchat.common.common.domain.vo.member.MemberReq;
 import com.nb.mallchat.common.common.domain.vo.req.*;
 import com.nb.mallchat.common.common.domain.vo.resp.ChatMessageReadResp;
 import com.nb.mallchat.common.common.domain.vo.resp.ChatMessageResp;
@@ -41,15 +42,15 @@ public interface ChatService {
 	//  * @return
 	//  */
 	ChatMessageResp getMsgResp(Long msgId, Long receiveUid);
-	//
-	// /**
-	//  * 获取群成员列表
-	//  *
-	//  * @param memberUidList
-	//  * @param request
-	//  * @return
-	//  */
-	// CursorPageBaseResp<ChatMemberResp> getMemberPage(List<Long> memberUidList, MemberReq request);
+
+	/**
+	 * 获取群成员列表
+	 *
+	 * @param memberUidList
+	 * @param request
+	 * @return
+	 */
+	CursorPageBaseResp<ChatMemberResp> getMemberPage(List<Long> memberUidList, MemberReq request);
 
 	/**
 	 * 获取消息列表
